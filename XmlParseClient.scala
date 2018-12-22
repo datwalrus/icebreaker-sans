@@ -12,30 +12,36 @@ import scala.xml.XML;
  *
  */
 
-class XmlParseClient(var location: Array(String), var temperature: Array(Double)) {
+class XmlParseClient(location: Array[String],
+                     temperature: Array[Double]) {
     // Parse information into instance variables user iteration numbers.
-    def parseInfo(val fileName: String, val iter: Int) {
+    def parseInfo(fileName: String, iter: Int) {
         // take filename as argument and load
         val xml = XML.loadFile(fileName)
 
         // find location and temperature elements
-        val loc = 
-            (xml \\ "channel" \\ "item" \ "condition" \ "@location") location
-        val temp =
-            (xml \\ "channel" \\ "item" \ "condition" \ "@temp") temp
-        location(iter) = loc
-        temperature(iter) = temp
+        val loc = (xml \\ "channel" \\ "item" \ "condition" \ "@location")
+        val temp = (xml \\ "channel" \\ "item" \ "condition" \ "@temp")
+        location(iter) = loc.toString
+        temperature(iter) = temp.toString.toDouble
     }
     
     // Determine which temperatures are worth keeping, and their indexes.
-    def findTemperatures() {
+    def findTemperatures(iter: Int) {
+        var indices = Seq.empty[Int]
+        for (i <- 0 to (iter - 1)) {
+            // check value for over or equal to 100.0
+            if (temperature(i) >= 100.0) {
+                // if valid, save index
+                indices :+= i
+            }
+        }
         
     }
     
     // Print data to file in format: <Location>: <Temperature> deg F
     /*
     def printInfo() {
-        // use array math to 
     }
     
     */
